@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button camera_btn = null;
     private Button opencv_btn = null;
     private Button upload_btn = null;
+    private Button shake_btn = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,12 +27,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         camera_btn = (Button) findViewById(R.id.camera);
         opencv_btn = (Button) findViewById(R.id.opencv);
         upload_btn = (Button) findViewById(R.id.upload);
+        shake_btn = (Button) findViewById(R.id.shake);
 
         accelerometer_btn.setOnClickListener(this);
         gyroscope_btn.setOnClickListener(this);
         camera_btn.setOnClickListener(this);
         opencv_btn.setOnClickListener(this);
         upload_btn.setOnClickListener(this);
+        shake_btn.setOnClickListener(this);
     }
 
 
@@ -62,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.upload :
                 Intent uIntent = new Intent(this, SelectUploadActivity.class);
                 startActivity(uIntent);
+                break;
+
+            case R.id.shake :
+                Intent sIntent = new Intent(this, ShakeActivity.class);
+                startActivity(sIntent);
                 break;
         }
     }

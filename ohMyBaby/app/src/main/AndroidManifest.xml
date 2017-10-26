@@ -56,5 +56,9 @@
             android:name=".SelectUploadActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ShakeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 </manifest>

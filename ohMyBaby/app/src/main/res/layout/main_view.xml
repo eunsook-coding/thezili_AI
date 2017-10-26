@@ -43,6 +43,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Upload Test" />
+
+        <Button
+            android:id="@+id/shake"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Shake Test" />
     </LinearLayout>
 
 
