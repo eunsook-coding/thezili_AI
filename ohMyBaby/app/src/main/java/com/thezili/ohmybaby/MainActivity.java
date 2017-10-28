@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.opencv :
-                Intent oIntent = new Intent(this, OpenCVActivity.class);
+                Intent oIntent = new Intent(this, OpenCVCameraActivity.class);
                 startActivity(oIntent);
                 break;
 

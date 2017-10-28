@@ -71,7 +71,7 @@ public class OpenCVActivity extends Activity implements CameraBridgeViewBase.CvC
             }
         }*/
 
-        mOpenCvCameraView = (CameraBridgeViewBase)findViewById(R.id.surface_view);
+        mOpenCvCameraView = (CameraBridgeViewBase)findViewById(R.id.opencv_camera_view);
 //        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
