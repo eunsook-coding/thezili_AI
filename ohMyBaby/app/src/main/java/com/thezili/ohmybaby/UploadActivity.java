@@ -143,7 +143,6 @@ public class UploadActivity extends Activity  {
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://182.221.33.99:9000/upload_image");
-            //HttpGet request = new HttpGet("http://182.221.33.99:9000/");
 
             //HttpResponse response;
             try {

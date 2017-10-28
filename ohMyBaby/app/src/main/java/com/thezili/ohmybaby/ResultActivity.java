@@ -9,9 +9,9 @@ import android.util.Log;
  * Created by KangEunSook on 2017-10-22.
  */
 
-public class OpenCVResultActivity extends Activity {
+public class ResultActivity extends Activity {
 
-    private static final String TAG = "OpenCVResultActivity";
+    private static final String TAG = "ResultActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

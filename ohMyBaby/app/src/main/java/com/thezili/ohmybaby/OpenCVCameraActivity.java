@@ -6,11 +6,11 @@ package com.thezili.ohmybaby;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
@@ -31,10 +31,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 
 public class OpenCVCameraActivity extends Activity implements CvCameraViewListener2, OnTouchListener {
-    private static final String TAG = "OCVSample::Activity";
+    private static final String TAG = "OpenCVCameraActivity";
 
     private OpenCVCameraView mOpenCvCameraView;
     private List<Size> mResolutionList;
@@ -79,9 +78,7 @@ public class OpenCVCameraActivity extends Activity implements CvCameraViewListen
         setContentView(R.layout.opencv_view);
 
         mOpenCvCameraView = (OpenCVCameraView) findViewById(R.id.opencv_camera_view);
-
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -122,62 +119,6 @@ public class OpenCVCameraActivity extends Activity implements CvCameraViewListen
         return inputFrame.rgba();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        List<String> effects = mOpenCvCameraView.getEffectList();
-
-        if (effects == null) {
-            Log.e(TAG, "Color effects are not supported by device!");
-            return true;
-        }
-
-        mColorEffectsMenu = menu.addSubMenu("Color Effect");
-        mEffectMenuItems = new MenuItem[effects.size()];
-
-        int idx = 0;
-        ListIterator<String> effectItr = effects.listIterator();
-        while(effectItr.hasNext()) {
-            String element = effectItr.next();
-            mEffectMenuItems[idx] = mColorEffectsMenu.add(1, idx, Menu.NONE, element);
-            idx++;
-        }
-
-        mResolutionMenu = menu.addSubMenu("Resolution");
-        mResolutionList = mOpenCvCameraView.getResolutionList();
-        mResolutionMenuItems = new MenuItem[mResolutionList.size()];
-
-        ListIterator<Size> resolutionItr = mResolutionList.listIterator();
-        idx = 0;
-        while(resolutionItr.hasNext()) {
-            Size element = resolutionItr.next();
-            mResolutionMenuItems[idx] = mResolutionMenu.add(2, idx, Menu.NONE,
-                    Integer.valueOf(element.width).toString() + "x" + Integer.valueOf(element.height).toString());
-            idx++;
-        }
-
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
-        if (item.getGroupId() == 1)
-        {
-            mOpenCvCameraView.setEffect((String) item.getTitle());
-            Toast.makeText(this, mOpenCvCameraView.getEffect(), Toast.LENGTH_SHORT).show();
-        }
-        else if (item.getGroupId() == 2)
-        {
-            int id = item.getItemId();
-            Size resolution = mResolutionList.get(id);
-            mOpenCvCameraView.setResolution(resolution);
-            resolution = mOpenCvCameraView.getResolution();
-            String caption = Integer.valueOf(resolution.width).toString() + "x" + Integer.valueOf(resolution.height).toString();
-            Toast.makeText(this, caption, Toast.LENGTH_SHORT).show();
-        }
-
-        return true;
-    }
-
     @SuppressLint("SimpleDateFormat")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -196,6 +137,29 @@ public class OpenCVCameraActivity extends Activity implements CvCameraViewListen
 
         mOpenCvCameraView.takePicture(fileName);
         Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
+
+        String path = dir.getPath();
+        boolean uploadResult = sendUpload(path);
+        if(!uploadResult) {
+            Log.e(TAG, "Camera TakePicture(), Save filePath is NULL!!!");
+        }
+
+        Log.d(TAG, "Save File Path = " + path);
+
         return false;
+    }
+
+    private boolean sendUpload(String filePath) {
+        if(filePath == null ||filePath.equals("") || filePath.isEmpty()) {
+            Log.e(TAG, "sendUpload(), filePath is NULL!!!");
+            return false;
+        }
+        Log.e(TAG, "sendUpload(), filePath = " + filePath);
+
+        Intent uploadIntent = new Intent(OpenCVCameraActivity.this, UploadActivity.class);
+        uploadIntent.putExtra("filePath", filePath);
+        startActivity(uploadIntent);
+
+        return true;
     }
 }
