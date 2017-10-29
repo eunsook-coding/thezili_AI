@@ -10,6 +10,8 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.opencv.android.JavaCameraView;
 

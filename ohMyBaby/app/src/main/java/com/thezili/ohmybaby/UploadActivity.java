@@ -38,8 +38,9 @@ public class UploadActivity extends Activity  {
     private static final String TAG = UploadActivity.class.getSimpleName();
 
     private ProgressBar progressBar;
-    private String filePath = null;
     private TextView txtPercentage;
+    private String filePath = null;
+
     private ImageView imgPreview;
     private VideoView vidPreview;
     private Button btnUpload;

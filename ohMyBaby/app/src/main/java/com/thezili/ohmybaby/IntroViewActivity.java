@@ -32,7 +32,7 @@ public class IntroViewActivity extends Activity {
 
                 Log.d(TAG, "onCreate()");
 
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(mContext, OpenCVCameraActivity.class);
                 startActivity(intent);
                 finish();
             }
