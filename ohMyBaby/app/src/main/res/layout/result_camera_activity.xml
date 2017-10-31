@@ -9,7 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:src="@drawable/circle"
         android:scaleType="matrix" />
+
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/circle"/>
 
 </FrameLayout>
