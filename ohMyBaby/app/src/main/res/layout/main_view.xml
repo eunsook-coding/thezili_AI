@@ -4,27 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ohmybaby.thezili.com.ohmybaby.MainActivity">
+    tools:context="com.thezili.ohmybaby.MainActivity">
 
     <LinearLayout
         android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="1dp">
-
-        <Button
-            android:id="@+id/acce_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Accelerometer Test" />
-
-        <Button
-            android:id="@+id/gyro_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Gyroscope Test" />
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints">
 
         <Button
             android:id="@+id/camera"

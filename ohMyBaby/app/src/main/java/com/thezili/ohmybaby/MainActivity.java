@@ -9,8 +9,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button accelerometer_btn = null;
-    private Button gyroscope_btn = null;
     private Button camera_btn = null;
     private Button opencv_btn = null;
     private Button upload_btn = null;
@@ -22,15 +20,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.main_view);
 
-        accelerometer_btn = (Button) findViewById(R.id.acce_start);
-        gyroscope_btn = (Button) findViewById(R.id.gyro_start);
         camera_btn = (Button) findViewById(R.id.camera);
         opencv_btn = (Button) findViewById(R.id.opencv);
         upload_btn = (Button) findViewById(R.id.upload);
         shake_btn = (Button) findViewById(R.id.shake);
 
-        accelerometer_btn.setOnClickListener(this);
-        gyroscope_btn.setOnClickListener(this);
         camera_btn.setOnClickListener(this);
         opencv_btn.setOnClickListener(this);
         upload_btn.setOnClickListener(this);
@@ -41,24 +35,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.acce_start :
-                Intent aIntent = new Intent(this, AccelerometerActivity.class);
-                startActivity(aIntent);
-                break;
-
-            case R.id.gyro_start :
-                Intent gIntent = new Intent(this, GyroscopeActivity.class);
-                startActivity(gIntent);
-
-                break;
 
             case R.id.camera :
-                Intent cIntent = new Intent(this, CameraActivity.class);
+                Intent cIntent = new Intent(this, TakeCameraActivity.class);
                 startActivity(cIntent);
                 break;
 
             case R.id.opencv :
-                Intent oIntent = new Intent(this, OpenCVCameraActivity.class);
+                Intent oIntent = new Intent(this, ResultCameraACtivity.class);
                 startActivity(oIntent);
                 break;
 
@@ -68,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.shake :
-                Intent sIntent = new Intent(this, ShakeActivity.class);
+                Intent sIntent = new Intent(this, MultiTouch.class);
                 startActivity(sIntent);
                 break;
         }
