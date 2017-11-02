@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -16,9 +17,14 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 
 public class TakeCameraActivity extends Activity implements SurfaceHolder.Callback {
+
+    private static final int   IMAGE_WIDTH = 1600; // 찍을 넓이
+    private static final int   IMAGE_HEIGHT = 1200; // 찍을 높이
+
     @SuppressWarnings("deprecation")
     Camera camera;
     SurfaceView surfaceView;
@@ -107,13 +113,58 @@ public class TakeCameraActivity extends Activity implements SurfaceHolder.Callba
 
         try {
             camera.setPreviewDisplay(surfaceHolder);
+            // 카메라에서 찍을 수 있는 모든 사이즈를 가지고 와서 그중에 하나를 선택한다.
+            Camera.Parameters parameters = camera.getParameters();
+            List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+            Camera.Size optimalSize;
+            optimalSize = getOptimalPreviewSize(sizes, IMAGE_WIDTH, IMAGE_HEIGHT);
+            parameters.setPictureSize(optimalSize.width, optimalSize.height);
+            camera.setParameters(parameters);
+
             camera.startPreview();
         }
         catch (Exception e) {
         }
     }
 
-    @Override
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int width, int height) {
+        final double ASPECT_TOLERANCE = 0.05;
+        double targetRatio = (double) width / height;
+        if (sizes == null) {
+            return null;
+        }
+        Camera.Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+
+        int targetHeight = height;
+
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
+                continue;
+            }
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
+            }
+        }
+
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
+                }
+            }
+        }
+        Log.i("optimal size", ""+optimalSize.width+" x "+optimalSize.height);
+        return optimalSize;
+    }
+
+        @Override
     protected void onDestroy() {
         super.onDestroy();
     }
@@ -129,7 +180,6 @@ public class TakeCameraActivity extends Activity implements SurfaceHolder.Callba
         param.setRotation(90);
         camera.setDisplayOrientation(90);
 
-        //Camera Portrait
         if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
             param.set("orientation", "portrait");
             camera.setDisplayOrientation(90);
@@ -144,6 +194,14 @@ public class TakeCameraActivity extends Activity implements SurfaceHolder.Callba
         try {
 
             camera.setPreviewDisplay(surfaceHolder);
+            // 카메라에서 찍을 수 있는 모든 사이즈를 가지고 와서 그중에 하나를 선택한다.
+            Camera.Parameters parameters = camera.getParameters();
+            List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
+            Camera.Size optimalSize;
+            optimalSize = getOptimalPreviewSize(sizes, IMAGE_WIDTH, IMAGE_HEIGHT);
+            parameters.setPictureSize(optimalSize.width, optimalSize.height);
+            camera.setParameters(parameters);
+
             camera.startPreview();
         }
 
@@ -154,8 +212,7 @@ public class TakeCameraActivity extends Activity implements SurfaceHolder.Callba
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder,
-                               int format, int width, int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         refreshCamera();
     }
 

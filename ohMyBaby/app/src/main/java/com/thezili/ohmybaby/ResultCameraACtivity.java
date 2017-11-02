@@ -7,10 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+
+import static android.content.ContentValues.TAG;
 
 public class ResultCameraACtivity extends Activity implements OnTouchListener {
 
@@ -39,13 +42,12 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
         String photoPath = intent.getStringExtra("strParamName");
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
+//        options.inSampleSize = 1;
         final Bitmap bmp = BitmapFactory.decodeFile(photoPath, options);
 
         Matrix matrix = new Matrix();
         matrix.preRotate(90);
-        Bitmap adjustedBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
-                bmp.getHeight(), matrix, true);
+        Bitmap adjustedBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
 
         ImageView img = (ImageView) findViewById(R.id.result_view);
         img.setImageBitmap(adjustedBitmap);
