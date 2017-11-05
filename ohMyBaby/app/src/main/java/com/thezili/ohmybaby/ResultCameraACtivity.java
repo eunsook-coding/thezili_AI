@@ -86,8 +86,12 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
                 sendUpload(mPhotoPath);
 
                 //Change Activity with Animation
-                startActivity(new Intent(ResultCameraACtivity.this, ProgressResultActivity.class));
+                Intent intent = new Intent(ResultCameraACtivity.this, ProgressResultActivity.class);
+                intent.putExtra("Photo_Path", mPhotoPath);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
+
+//                startActivity(new Intent(ResultCameraACtivity.this, ProgressResultActivity.class));
 //                finish();
 
             }
@@ -159,7 +163,8 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
     private boolean sendUpload(String path)
     {
         Log.d(TAG, "sendUpload()");
-        new UploadFileToServer().execute();
+        //new UploadFileToServer().execute();
+
         return true;
     }
 
@@ -247,7 +252,6 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
 
             // showing the server response in an alert dialog
             showAlert(result);
-
             super.onPostExecute(result);
         }
     }

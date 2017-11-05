@@ -1,9 +1,13 @@
 package com.thezili.ohmybaby;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by cwjun on 17. 11. 5.
@@ -13,6 +17,8 @@ public class FinalResultActivity extends Activity {
 
     private static final String TAG = "FinalResultActivity";
 
+    private TextView mFinalResultTxt = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +26,11 @@ public class FinalResultActivity extends Activity {
 
         Log.d(TAG, ">> onCreate()");
 
+        mFinalResultTxt = (TextView) findViewById(R.id.final_result_txt);
+
+        Intent intent = getIntent();
+        String finalResult = intent.getStringExtra("strFinalResult");
+        mFinalResultTxt.setText(finalResult);
 
     }
 
