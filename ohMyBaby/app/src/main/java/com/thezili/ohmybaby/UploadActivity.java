@@ -143,7 +143,7 @@ public class UploadActivity extends Activity  {
             String responseString = null;
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://182.221.33.99:9000/upload_image");
+            HttpPost httppost = new HttpPost("http://182.221.33.99:9999/upload_image");
 
             //HttpResponse response;
             try {
@@ -200,7 +200,6 @@ public class UploadActivity extends Activity  {
 
             super.onPostExecute(result);
         }
-
     }
 
     /**

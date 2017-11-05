@@ -1,21 +1,39 @@
 package com.thezili.ohmybaby;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.ImageView;
 
-import static android.content.ContentValues.TAG;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import java.io.File;
+import java.io.IOException;
+
 
 public class ResultCameraACtivity extends Activity implements OnTouchListener {
+
+    private static final String TAG = "ResultCameraACtivity";
 
     // these matrices will be used to move and zoom image
     private Matrix matrix = new Matrix();
@@ -33,17 +51,22 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
     private float newRot = 0f;
     private float[] lastEvent = null;
 
+    private String mPhotoPath = null;
+    private Button resultBtn = null;
+
+    long totalSize = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result_camera_activity);
 
         Intent intent = getIntent();
-        String photoPath = intent.getStringExtra("strParamName");
+        mPhotoPath = intent.getStringExtra("strParamName");
 
         BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inSampleSize = 1;
-        final Bitmap bmp = BitmapFactory.decodeFile(photoPath, options);
+        final Bitmap bmp = BitmapFactory.decodeFile(mPhotoPath, options);
 
         Matrix matrix = new Matrix();
         matrix.preRotate(90);
@@ -53,6 +76,22 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
         img.setImageBitmap(adjustedBitmap);
 
         img.setOnTouchListener(this);
+
+        resultBtn = (Button) findViewById(R.id.result_btn);
+        resultBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //File Upload
+                sendUpload(mPhotoPath);
+
+                //Change Activity with Animation
+                startActivity(new Intent(ResultCameraACtivity.this, ProgressResultActivity.class));
+                overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
+//                finish();
+
+            }
+        });
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -115,6 +154,115 @@ public class ResultCameraACtivity extends Activity implements OnTouchListener {
 
         view.setImageMatrix(matrix);
         return true;
+    }
+
+    private boolean sendUpload(String path)
+    {
+        Log.d(TAG, "sendUpload()");
+        new UploadFileToServer().execute();
+        return true;
+    }
+
+    private class UploadFileToServer extends AsyncTask<Void, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            // setting progress bar to zero
+//            progressBar.setProgress(0);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            // Making progress bar visible
+//            progressBar.setVisibility(View.VISIBLE);
+
+            // updating progress bar value
+//            progressBar.setProgress(progress[0]);
+
+            // updating percentage value
+//            txtPercentage.setText(String.valueOf(progress[0]) + "%");
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return uploadFile();
+        }
+
+        @SuppressWarnings("deprecation")
+        private String uploadFile() {
+            String responseString = null;
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://182.221.33.99:9999/upload_image");
+
+            //HttpResponse response;
+            try {
+                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
+                        new AndroidMultiPartEntity.ProgressListener() {
+                            @Override
+                            public void transferred(long num) {
+                                publishProgress((int) ((num / (float) totalSize) * 100));
+                            }
+                        });
+
+                File sourceFile = new File(mPhotoPath);
+
+                // Adding file data to http body
+                entity.addPart("image", new FileBody(sourceFile));
+
+                // Extra parameters if you want to pass to server
+                entity.addPart("website",
+                        new StringBody("www.thezili.com"));
+                entity.addPart("email", new StringBody("thezilie.changwook@gmail.com"));
+
+                totalSize = entity.getContentLength();
+                httppost.setEntity(entity);
+
+                // Making server call
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity r_entity = response.getEntity();
+
+                //response = httpclient.execute(request);
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200) {
+                    // Server response
+                    responseString = EntityUtils.toString(r_entity);
+                    //Log.d("Response of GET request", response.toString());
+                    //Log.d("Response of POST request", responseString);
+                } else {
+                    responseString = "Error occurred! Http Status Code: "
+                            + statusCode;
+                }
+            } catch (ClientProtocolException e) {
+                responseString = e.toString();
+            } catch (IOException e) {
+                responseString = e.toString();
+            }
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.e(TAG, "Response from server: " + result);
+
+            // showing the server response in an alert dialog
+            showAlert(result);
+
+            super.onPostExecute(result);
+        }
+    }
+
+    private void showAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message).setTitle("Response from Servers")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // do nothing
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**

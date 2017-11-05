@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.shake :
-                Intent sIntent = new Intent(this, MultiTouch.class);
+                Intent sIntent = new Intent(this, ShakeActivity.class);
                 startActivity(sIntent);
                 break;
         }

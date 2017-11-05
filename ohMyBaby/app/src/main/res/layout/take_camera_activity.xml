@@ -23,6 +23,12 @@
         android:text="사진찍기" />
 
     <ImageView
+        android:id="@+id/imageview"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginLeft="30dp" />
+
+    <ImageView
         android:layout_width="400dp"
         android:layout_height="400dp"
         android:layout_marginLeft="30dp"

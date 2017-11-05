@@ -47,11 +47,16 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".UploadActivity"
+            android:name=".ProgressResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"/>
+
+        <activity
+            android:name=".FinalResultActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ResultCameraActivity_tttt"
+            android:name=".UploadActivity"
             android:screenOrientation="portrait" />
 
         <activity android:name=".MainActivity" />
@@ -60,10 +65,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ShakeActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".MultiTouch"
             android:screenOrientation="portrait" />
 
 
